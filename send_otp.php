@@ -60,7 +60,7 @@ function sendSMS($mobile, $user_id, $otp, $connect)
     $connect->bind(":otp", $otp);
 
     $connect->execute();
-    
+
     $last_id = $connect->lastInsertId();
 
     if ($last_id) {
@@ -69,3 +69,4 @@ function sendSMS($mobile, $user_id, $otp, $connect)
         return false;
     }
 }
+
