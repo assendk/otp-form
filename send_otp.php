@@ -1,29 +1,40 @@
 <?php
-//ini_set('display_errors', 1);
-//error_reporting(E_ALL);
+
 // Start session
 session_start();
 
 // Include database connection file
-
-include_once('config.php');
+include_once 'classes/Database.php';
+include_once 'classes/SendSMS.php';
 
 // Send OTP to email Form post
 if (isset($_POST['email'])) {
 
-    $email  = $con->real_escape_string($_POST['email']);
-    $otp    = mt_rand(1111, 9999);
-    $query  = "SELECT * FROM users WHERE email = '$email'";
-    $result = $con->query($query);
-    $row = $result->fetch_assoc();
-//    echo '<pre>:'; print_r($row); echo "</pre><br>";
+    $connect = new Database;
 
-    if ($result->num_rows > 0) {
-        $con->query("UPDATE users SET otp = '$otp' WHERE email = '$email'");
-        sendSMS($row['mobile'], $row['user_id'], $otp);
+    $email  = $_POST['email'];
+    $otp    = mt_rand(1111, 9999);
+
+    $connect->query("SELECT * FROM users WHERE email = :email");
+    $connect->bind(":email", $_POST['email']);
+    $row = $connect->getOne();
+
+    if (is_array($row) && count($row) > 0) {
+
+        $connect->query("UPDATE users SET otp = :otp WHERE email = :email");
+
+        $connect->bind(":email", $email);
+        $connect->bind(":otp", $otp);
+
+        $result = $connect->execute();
+        
+
+        sendSMS($row['mobile'], $row['user_id'], $otp, $connect);
+//        $send = new SendSMS($row['mobile'], $row['user_id'], $otp);
+
         $_SESSION['EMAIL'] = $email;
         $_SESSION['MOBILE'] = $row['mobile'];
-//        echo "yes";
+
         echo json_encode(['message'=>'yes']);
 
     } else{
@@ -34,19 +45,25 @@ if (isset($_POST['email'])) {
 }
 
 //write to DB
-function sendSMS($mobile, $user_id, $otp)
+function sendSMS($mobile, $user_id, $otp, $connect)
 {
 
     global $con;
 
-    $mobile = $mobile;
-    $user_id  = $user_id;
     $message  = "Your OTP is: " . $otp;
 
-    $query  = "INSERT INTO sms_sent (mobile, user_id, message, otp) VALUES ('$mobile','$user_id','$message','$otp')";
-    $result = $con->query($query);
+    $connect->query("INSERT INTO sms_sent (mobile, user_id, message, otp) VALUES (:mobile, :user_id, :message, :otp)");
 
-    if ($result) {
+    $connect->bind(":mobile", $mobile);
+    $connect->bind(":user_id", $user_id);
+    $connect->bind(":message", $message);
+    $connect->bind(":otp", $otp);
+
+    $connect->execute();
+    
+    $last_id = $connect->lastInsertId();
+
+    if ($last_id) {
         return true;
     }else{
         return false;

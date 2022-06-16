@@ -4,10 +4,13 @@
 class Database
 {
     private $host = '127.0.0.1';
+//    private $host = 'localhost';
     private $user = 'root';
     private $pass = 'example';
+//    private $pass = '';
     private $dbname = 'otp-form';
-    private $port = '3306';
+    private $port = '3606';
+//    private $port = '3306';
     private $charset = 'utf8';
 
     private $dbh;
@@ -34,6 +37,9 @@ class Database
         } catch (PDOException $e) {
             // Catch any errors
             $this->error = $e->getMessage();
+            if ($this->error) {
+                echo '<pre>:>'; echo print_r($this->error,1); echo "</pre><br>";
+            }
         }
     }
 

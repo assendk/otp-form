@@ -1,4 +1,4 @@
-RewriteEngine On
+#RewriteEngine On
 #RewriteBase /myapp
 #
 #RewriteCond %{THE_REQUEST} /public/([^\s?]*) [NC]

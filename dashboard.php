@@ -1,14 +1,19 @@
-
-
 <?php
 
-session_start();
+if(session_id() == '' || !isset($_SESSION) || session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+include_once 'classes/Database.php';
 
 if (isset($_SESSION['IS_LOGIN'])) {
 
     $user_email = ucwords($_SESSION['EMAIL']);
+    $connect = new Database;
+
 
 } else{
+
     header("Location:login.php");
     die();
 }

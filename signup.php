@@ -17,8 +17,6 @@ if (isset($_POST['email'])) {
         die(json_encode('User already exists!'));
     }
 
-//    echo '<pre>$row:'; print_r($row); echo '</pre>';
-
     $mobile = $_POST['mobile'];
 
     if (validate_mobile($mobile)){

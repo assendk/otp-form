@@ -56,14 +56,9 @@
 
                     let obj = JSON.parse(result);
 
-                    console.log(typeof obj.message)
-
-                    // if ( obj.message=== undefined || obj.message == null) {
-                    //
-                    // }
                     if (obj.message == "yes") {
 
-                        alert("Registration successfully Please login");
+                        // alert("Registration successfully Please login");
                         window.location ='login.php';
 
                     }else if (obj.message == "no") {
