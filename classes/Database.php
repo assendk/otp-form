@@ -1,10 +1,11 @@
 <?php
+//namespace classes;
 
 class Database
 {
     private $host = '127.0.0.1';
     private $user = 'root';
-    private $pass = '';
+    private $pass = 'example';
     private $dbname = 'otp-form';
     private $port = '3306';
     private $charset = 'utf8';

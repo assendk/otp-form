@@ -1,7 +1,8 @@
+<?php ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Registration & Login with Email OTP verification using Jquery AJAX with PHP Mysql</title>
+    <title>OTP Form</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -10,7 +11,7 @@
 <body>
 
 <div class="card text-center" style="padding:20px;">
-    <h3>Registration & Login with Email OTP verification using Jquery AJAX with PHP Mysql</h3>
+    <h3>OTP Form</h3>
 </div><br>
 
 <div class="container">
@@ -49,8 +50,9 @@
     </div>
 </div>
 
-<script type="text/javascript" src="assets/js/jquery-3.5.1.min.js"></script>
-<script type="text/javascript">
+<script type="text/javascript" src="/otp-form/assets/js/jquery-3.5.1.min.js"></script>
+<script>
+
     $(document).ready(function(){
 
         // Send OTP email jquery
@@ -64,17 +66,20 @@
                 data : {email:email},
 
                 success:function(result){
-                    console.log(222, result)
 
-                    if (result == "yes") {
+                    let obj = JSON.parse(result)
+                    var res = obj.message;
 
-                        // $("#otpForm,.alert-success").show();
-                        $("#otpForm").show();
+                    if (obj.message == "yes") {
+
+                        $("#otpForm,.alert-success").show();
+                        // $("#otpForm").show();
 
                         $("#emailForm").hide();
                         $(".success-message").html("OTP sent your email address");
                     }
-                    if (result =="no") {
+                    if (obj.message =="no") {
+
                         $(".error-message").html("Please enter valid email");
                     }
                 }
@@ -90,11 +95,15 @@
                 type : "POST",
                 cache:false,
                 data : {otp:otp},
+
                 success:function(response){
-                    if (response == "yes") {
+
+                    let obj = JSON.parse(response)
+
+                    if (obj.message == "yes") {
                         window.location.href='dashboard.php';
                     }
-                    if (response =="no") {
+                    if (obj.message =="no") {
                         $(".otp-message").html("Please enter valid OTP");
                     }
                 }

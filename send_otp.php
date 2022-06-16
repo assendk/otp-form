@@ -1,5 +1,6 @@
 <?php
-
+//ini_set('display_errors', 1);
+//error_reporting(E_ALL);
 // Start session
 session_start();
 
@@ -20,11 +21,15 @@ if (isset($_POST['email'])) {
     if ($result->num_rows > 0) {
         $con->query("UPDATE users SET otp = '$otp' WHERE email = '$email'");
         sendSMS($row['mobile'], $row['user_id'], $otp);
+        $_SESSION['EMAIL'] = $email;
         $_SESSION['MOBILE'] = $row['mobile'];
-        echo "yes";
+//        echo "yes";
+        echo json_encode(['message'=>'yes']);
 
-    }else{
-        echo "no";
+    } else{
+
+        echo json_encode(['message'=>'no']);
+
     }
 }
 
@@ -36,9 +41,9 @@ function sendSMS($mobile, $user_id, $otp)
 
     $mobile = $mobile;
     $user_id  = $user_id;
-    $otp  = "Your OTP is: " . $otp;
+    $message  = "Your OTP is: " . $otp;
 
-    $query  = "INSERT INTO sms_sent (mobile, user_id, otp) VALUES ('$mobile','$user_id','$otp')";
+    $query  = "INSERT INTO sms_sent (mobile, user_id, message, otp) VALUES ('$mobile','$user_id','$message','$otp')";
     $result = $con->query($query);
 
     if ($result) {
@@ -46,46 +51,4 @@ function sendSMS($mobile, $user_id, $otp)
     }else{
         return false;
     }
-}
-
-
-
-// Create function for send email
-function sendMail2($to, $msg){
-
-    require 'PHPMailer/PHPMailerAutoload.php';
-
-    $mail = new PHPMailer;
-
-    //$mail->SMTPDebug = 3;                               // Enable verbose debug output
-
-    $mail->isSMTP();                                      // Set mailer to use SMTP
-    $mail->Host = 'smtp.gmail.com';                       // Specify main and backup SMTP servers
-    $mail->SMTPAuth = true;                               // Enable SMTP authentication
-    $mail->Username = 'YourEmailAddress';                 // SMTP username
-    $mail->Password = 'YourEmailPassword';                // SMTP password
-    $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-    $mail->Port = 587;                                    // TCP port to connect to
-    $mail->setFrom('FromEmail', 'OTP Verification');
-    $mail->addAddress($to, 'OTP Verification');           // Add a recipient
-
-    $mail->isHTML(true);                                  // Set email format to HTML
-
-    $mail->SMTPOptions = array(
-        'ssl' => array(
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-            'allow_self_signed' => true
-        )
-    );
-
-    $mail->Subject = 'OTP Verification';
-    $mail->Body    = 'Your verification OTP Code is <b>'.$msg.'</b>';
-
-    if($mail->send()) {
-        return true;
-    } else {
-        return false;
-    }
-
 }

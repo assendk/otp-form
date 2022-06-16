@@ -1,9 +1,9 @@
 <?php
 
 // Database configuration
-$hostname = "localhost";
+$hostname = "172.18.0.1";
 $username = "root";
-$password = "";
+$password = "example";
 $dbname   = "otp-form";
 
 // Create database connection
