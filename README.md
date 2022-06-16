@@ -7,6 +7,7 @@
 
 // TODO 
 - bootstrap all urls
+- use .env for db params, now they are hardcoded
 - more validations for mobile number
 - validation for password
 - Convert Procedural Design to Objects
